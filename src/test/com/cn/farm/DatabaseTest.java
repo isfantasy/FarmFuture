@@ -17,7 +17,7 @@ public class DatabaseTest {
 
     @Test
     public void animalTest(){
-        ArrayNode animals = Database.getAnimal();
+        ArrayNode animals = Database.getAnimalByName("test");
         for (JsonNode node:animals){
             System.out.println(node.toString());
         }

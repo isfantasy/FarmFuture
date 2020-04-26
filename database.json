@@ -1,138 +1,120 @@
 {
   "farm": {
-    "fantasy": {
-      "name": "fantasy",
-      "type": 1,
+    "user1": {
+      "name": "user1",
+      "type": 0,
       "fenceDamaged": 0,
-      "duration": 7,
-      "money": 10000,
+      "duration": "0/0/7 00:00:00",
+      "money": 1000,
       "farmerRemainderCount": 2,
-      "lastLoginTime": "2020/04/24 07:07:07",
-      "createTime": "2020/04/24 07:07:07",
+      "lastLoginTime": "2020/04/25 14:20:00",
+      "createTime": "2020/04/25 14:20:00",
       "animal": [
         {
-          "name": "橘猫",
-          "purchasePrice": 12,
-          "sellPrice": 10,
-          "description": "beautiful",
-          "duration": 1,
-          "happinessIndex": 90,
-          "healthIndex": 80,
+          "name": "cat",
+          "purchasePrice": 20,
+          "sellPrice": 15,
+          "description": "",
+          "duration": "0/0/7 00:00:00",
+          "happinessIndex": 80,
+          "healthIndex": 75,
           "status": 0,
-          "updateTime": "2020/04/24 07:07:07",
-          "createTime": "2020/04/24 07:07:07"
+          "updateTime": "2020/04/25 14:20:00",
+          "createTime": "2020/04/24 14:20:00"
         }
       ],
       "plant": [
         {
-          "name": "文竹",
-          "purchasePrice": 12,
-          "sellPrice": 10,
-          "description": "beautiful",
-          "duration": "0/0/1 05:00:00",
+          "name": "tree",
+          "purchasePrice": 10,
+          "sellPrice": 5,
+          "description": "",
+          "duration": "0/0/6 00:00:00",
           "status": 0,
-          "updateTime": "2020/04/24 07:07:07",
-          "createTime": "2020/04/24 07:07:07"
+          "updateTime": "2020/04/25 14:20:00",
+          "createTime": "2020/04/24 14:20:00"
         }
       ],
       "item": {
         "muck": [
           {
-            "name": "低级肥料",
-            "purchasePrice": 12,
-            "sellPrice": 10,
-            "effect": "0/0/0 2:00:00",
-            "type": 0,
-            "status": 0,
-            "updateTime": "2020/04/24 07:07:07",
-            "createTime": "2020/04/24 07:07:07"
+            "name": "muck_level_1",
+            "purchasePrice": 5,
+            "sellPrice": 4,
+            "effect": "0/0/1 2:00:00",
+            "type": 1
           }
         ],
         "feed": [
           {
-            "name": "低级饲料",
-            "purchasePrice": 12,
-            "sellPrice": 10,
-            "value": 10,
-            "type": 0,
-            "status": 0,
-            "updateTime": "2020/04/24 07:07:07",
-            "createTime": "2020/04/24 07:07:07"
+            "name": "feed_level_1",
+            "purchasePrice": 5,
+            "sellPrice": 4,
+            "healthEffect": 10,
+            "happinessEffect": 15,
+            "type": 1
           }
         ]
-      }
     }
   },
-  "farmType": [
-    {
-      "key": 1,
-      "value": "初始金额+20%"
-    }
-  ],
   "animal": [
     {
-      "name": "橘猫",
-      "purchasePrice": 12,
-      "sellPrice": 10,
-      "description": "beautiful",
-      "duration": 1
+      "name": "cat",
+      "purchasePrice": 20,
+      "sellPrice": 15,
+      "description": "",
+      "duration": "0/0/7 00:00:00"
     }
   ],
   "plant": [
     {
-      "name": "文竹",
-      "purchasePrice": 12,
-      "sellPrice": 10,
-      "description": "beautiful",
-      "duration": "0/0/1 05:00:00"
+      "name": "tree",
+      "purchasePrice": 10,
+      "sellPrice": 5,
+      "description": "",
+      "duration": "0/0/6 00:00:00"
     }
   ],
   "item": {
     "muck": [
       {
-        "name": "低级肥料",
-        "purchasePrice": 12,
-        "sellPrice": 10,
-        "effect": "0/0/0 2:00:00",
-        "type": 0
-      },
-      {
-        "name": "中级肥料",
-        "purchasePrice": 12,
-        "sellPrice": 10,
-        "effect": "0/0/0 4:00:00",
+        "name": "muck_level_1",
+        "purchasePrice": 5,
+        "sellPrice": 4,
+        "effect": "0/0/1 2:00:00",
         "type": 1
       },
       {
-        "name": "高级肥料",
-        "purchasePrice": 12,
-        "sellPrice": 10,
-        "effect": "0/0/0 8:00:00",
+        "name": "muck_level_2",
+        "purchasePrice": 10,
+        "sellPrice": 6,
+        "effect": "0/0/2 2:00:00",
         "type": 2
       }
     ],
     "feed": [
       {
-        "name": "低级饲料",
-        "purchasePrice": 12,
-        "sellPrice": 10,
-        "value": 10,
-        "type": 0
-      },
-      {
-        "name": "中级饲料",
-        "purchasePrice": 12,
-        "sellPrice": 10,
-        "value": 20,
+        "name": "feed_level_1",
+        "purchasePrice": 5,
+        "sellPrice": 4,
+        "healthEffect": 10,
+        "happinessEffect": 15,
         "type": 1
       },
       {
-        "name": "高级饲料",
-        "purchasePrice": 12,
-        "sellPrice": 10,
-        "value": 30,
+        "name": "feed_level_2",
+        "purchasePrice": 10,
+        "sellPrice": 8,
+        "healthEffect": 20,
+        "happinessEffect": 25,
         "type": 2
       }
     ]
-  }
+  },
+  "farmType": [
+    {
+      "key": 1,
+      "value": "money +10%"
+    }
+  ]
 }

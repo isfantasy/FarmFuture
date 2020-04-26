@@ -16,6 +16,6 @@ public class ModelTest {
     @Test
     public void FarmTest(){
         Farm farm = new Farm("fantasy");
-        System.out.println(farm.farmJson.get("animal").toString());
+        System.out.println(farm.toString());
     }
 }
