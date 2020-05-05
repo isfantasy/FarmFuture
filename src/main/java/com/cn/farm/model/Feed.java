@@ -13,7 +13,6 @@ public class Feed extends BaseItem{
     private Integer healthEffect;
     // 增加幸福值
     private Integer happinessEffect;
-    private Integer type;
 
     public Integer getHealthEffect() {
         return healthEffect;
@@ -31,11 +30,4 @@ public class Feed extends BaseItem{
         this.happinessEffect = happinessEffect;
     }
 
-    public Integer getType() {
-        return type;
-    }
-
-    public void setType(Integer type) {
-        this.type = type;
-    }
 }

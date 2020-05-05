@@ -11,13 +11,14 @@ import java.io.File;
 import java.io.IOException;
 
 /**
+ * The type Database.
+ *
  * @ClassName Database
  * @Description: json数据文件操作类
  * @Author Fantasy
- * @Date 2020/4/24
+ * @Date 2020 /4/24
  * @Version V1.0
- **/
-
+ */
 public class Database {
     /**
      * 保存json文件所有数据.
@@ -106,6 +107,20 @@ public class Database {
         return (ArrayNode) dataJson.get("farmType");
     }
 
+
+    /**
+     * 获取全局变量.
+     *
+     * @param param 变量名
+     * @return the object
+     */
+    public static Object getGlobalParam(String param){
+        return dataJson.get(param);
+    }
+
+    /**
+     * Save data.
+     */
     public static void saveData() {
         ObjectMapper mapper = new ObjectMapper();
         JsonFactory jsonFactory = new JsonFactory();

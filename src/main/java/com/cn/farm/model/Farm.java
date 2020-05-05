@@ -1,5 +1,6 @@
 package com.cn.farm.model;
 
+import cn.hutool.core.date.DateUtil;
 import com.cn.farm.database.Database;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -31,19 +32,17 @@ public class Farm {
         this.name = name;
         this.type = Integer.parseInt(farmJson.get("type").toString());
         this.fenceDamaged = Integer.parseInt(farmJson.get("fenceDamaged").toString());
-        this.duration = farmJson.get("duration").toString();
+        this.duration = DateUtil.parse(farmJson.get("duration").toString());
         this.money = Integer.parseInt(farmJson.get("money").toString());
         this.farmerRemainderCount = Integer.parseInt(farmJson.get("farmerRemainderCount").toString());
-        this.createTime = farmJson.get("duration").toString();
+        this.createTime = DateUtil.parse(farmJson.get("duration").toString()) ;
     }
-
 
     public String getName() {
         return name;
     }
 
     public void setName(String name) {
-
         this.name = name;
     }
 
@@ -87,11 +86,11 @@ public class Farm {
         this.farmerRemainderCount = farmerRemainderCount;
     }
 
-    public String getCreateTime() {
+    public Date getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(String createTime) {
+    public void setCreateTime(Date createTime) {
         this.createTime = createTime;
     }
 }

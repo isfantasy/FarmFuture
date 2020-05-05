@@ -1,7 +1,5 @@
 package com.cn.farm.model;
 
-import java.util.Date;
-
 /**
  * @ClassName Muck
  * @Description: 肥料类
@@ -12,22 +10,14 @@ import java.util.Date;
 
 public class Muck extends BaseItem{
 
-    private Date effect;
-    private Integer type;
+    private Integer effectHour;
 
-    public Date getEffect() {
-        return effect;
+    public Integer getEffectHour() {
+        return effectHour;
     }
 
-    public void setEffect(Date effect) {
-        this.effect = effect;
+    public void setEffectHour(Integer effectHour) {
+        this.effectHour = effectHour;
     }
 
-    public Integer getType() {
-        return type;
-    }
-
-    public void setType(Integer type) {
-        this.type = type;
-    }
 }

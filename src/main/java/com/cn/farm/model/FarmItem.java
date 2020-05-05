@@ -1,5 +1,6 @@
 package com.cn.farm.model;
 
+import cn.hutool.core.date.DateUtil;
 import com.cn.farm.database.Database;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -27,8 +28,8 @@ public class FarmItem {
         for (JsonNode feed:feedArray){
             Feed feed1 = new Feed();
             feed1.setName(feed.get("name").toString());
-            feed1.setPurchasePrice(feed.get("purchasePrice").toString());
-            feed1.setSellPrice(feed.get("sellPrice").toString());
+            feed1.setPurchasePrice(Integer.parseInt(feed.get("purchasePrice").toString()));
+            feed1.setSellPrice(Integer.parseInt(feed.get("sellPrice").toString()));
             feed1.setHappinessEffect(Integer.parseInt(feed.get("happinessEffect").toString()));
             feed1.setHealthEffect(Integer.parseInt(feed.get("healthEffect").toString()));
             feed1.setType(Integer.parseInt(feed.get("type").toString()));
@@ -39,8 +40,8 @@ public class FarmItem {
             muck1.setName(muck.get("name").toString());
             muck1.setPurchasePrice(Integer.parseInt(muck.get("purchasePrice").toString()));
             muck1.setSellPrice(Integer.parseInt(muck.get("sellPrice").toString()));
-            muck1.setType(Integer.parseInt(muck.get("type").toString()));
-            muck1.setEffect(Integer.parseInt(muck.get("effect").toString()));
+            muck1.setLevel(Integer.parseInt(muck.get("type").toString()));
+            muck1.setEffect(DateUtil.parse(muck.get("effect").toString()));
             muckList.add(muck1);
         }
     }

@@ -1,5 +1,6 @@
 package com.cn.farm;
 
+import com.cn.farm.model.Animal;
 import com.cn.farm.model.Farm;
 import org.junit.Test;
 
@@ -17,5 +18,12 @@ public class ModelTest {
     public void FarmTest(){
         Farm farm = new Farm("fantasy");
         System.out.println(farm.toString());
+    }
+
+    @Test
+    public void AnimalTest(){
+        Animal animal = new Animal();
+        animal.setName("fantasy");
+        System.out.println(animal.toString());
     }
 }

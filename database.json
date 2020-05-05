@@ -15,10 +15,11 @@
           "purchasePrice": 20,
           "sellPrice": 15,
           "description": "",
-          "duration": "0/0/7 00:00:00",
+          "durationHour": 50,
           "happinessIndex": 80,
           "healthIndex": 75,
           "status": 0,
+          "count": 1,
           "updateTime": "2020/04/25 14:20:00",
           "createTime": "2020/04/24 14:20:00"
         }
@@ -29,8 +30,11 @@
           "purchasePrice": 10,
           "sellPrice": 5,
           "description": "",
-          "duration": "0/0/6 00:00:00",
+          "durationHour": 24,
+          "adjHour": 0,
           "status": 0,
+          "count": 1,
+          "lastWatering": "2020/04/25 14:20:00",
           "updateTime": "2020/04/25 14:20:00",
           "createTime": "2020/04/24 14:20:00"
         }
@@ -41,8 +45,9 @@
             "name": "muck_level_1",
             "purchasePrice": 5,
             "sellPrice": 4,
-            "effect": "0/0/1 2:00:00",
-            "type": 1
+            "effectHour": 2,
+            "level": 1,
+            "count": 1
           }
         ],
         "feed": [
@@ -52,9 +57,11 @@
             "sellPrice": 4,
             "healthEffect": 10,
             "happinessEffect": 15,
-            "type": 1
+            "level": 1,
+            "count": 1
           }
         ]
+      }
     }
   },
   "animal": [
@@ -63,7 +70,7 @@
       "purchasePrice": 20,
       "sellPrice": 15,
       "description": "",
-      "duration": "0/0/7 00:00:00"
+      "durationHour": 50
     }
   ],
   "plant": [
@@ -72,7 +79,7 @@
       "purchasePrice": 10,
       "sellPrice": 5,
       "description": "",
-      "duration": "0/0/6 00:00:00"
+      "duration": 25
     }
   ],
   "item": {
@@ -81,15 +88,15 @@
         "name": "muck_level_1",
         "purchasePrice": 5,
         "sellPrice": 4,
-        "effect": "0/0/1 2:00:00",
-        "type": 1
+        "effectHour": 2,
+        "level": 1
       },
       {
         "name": "muck_level_2",
         "purchasePrice": 10,
         "sellPrice": 6,
-        "effect": "0/0/2 2:00:00",
-        "type": 2
+        "effectHour": 4,
+        "level": 2
       }
     ],
     "feed": [
@@ -99,7 +106,7 @@
         "sellPrice": 4,
         "healthEffect": 10,
         "happinessEffect": 15,
-        "type": 1
+        "level": 1
       },
       {
         "name": "feed_level_2",
@@ -107,7 +114,7 @@
         "sellPrice": 8,
         "healthEffect": 20,
         "happinessEffect": 25,
-        "type": 2
+        "level": 2
       }
     ]
   },
@@ -116,5 +123,7 @@
       "key": 1,
       "value": "money +10%"
     }
-  ]
+  ],
+  "initMoney": 1000,
+  "wateringHour": 2
 }

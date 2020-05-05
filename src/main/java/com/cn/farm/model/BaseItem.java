@@ -8,13 +8,17 @@ package com.cn.farm.model;
  * @Version V1.0
  **/
 
-public class BaseItem{
+public abstract class BaseItem{
     // 名称
-    private String name;
+    public String name;
     // 购买价格
-    private Integer purchasePrice;
+    public Integer purchasePrice;
     // 出售价格
-    private Integer sellPrice;
+    public Integer sellPrice;
+    // 物品等级
+    public Integer level;
+    // 剩余数量
+    public Integer count;
 
     public String getName() {
         return name;
@@ -38,5 +42,21 @@ public class BaseItem{
 
     public void setSellPrice(Integer sellPrice) {
         this.sellPrice = sellPrice;
+    }
+
+    public Integer getLevel() {
+        return level;
+    }
+
+    public void setLevel(Integer level) {
+        this.level = level;
+    }
+
+    public Integer getCount() {
+        return count;
+    }
+
+    public void setCount(Integer count) {
+        this.count = count;
     }
 }

@@ -1,5 +1,7 @@
 package com.cn.farm.model;
 
+import com.cn.farm.database.Database;
+
 import java.util.Date;
 
 /**
@@ -9,97 +11,39 @@ import java.util.Date;
  * @Version: v0.0.1
  * @Date: 2020/4/25
  **/
-public class Plant {
-    private String name;
-    private Integer purchasePrice;
-    private Integer sellPrice;
+public class Plant extends BaseItem implements PlantAction {
     private String description;
-    private Date duration;
+    private Integer durationHour;
+    private Integer adjHour;
     private Integer status;
     private Date updateTime;
+    private Date lastWatering;
     private Date createTime;
 
-    public String getName() {
-        return name;
+    @Override
+    public boolean watering() {
+        adjHour += (Integer) Database.getGlobalParam("wateringHour");
+        return true;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    @Override
+    public boolean fertilize(Muck muck) {
+        if (muck.getCount() < 1) {
+            return false;
+        }
+        adjHour += muck.getEffectHour();
+        muck.setCount(muck.getCount());
+        return true;
     }
 
-    public Integer getPurchasePrice() {
-        return purchasePrice;
+    @Override
+    public boolean purchase() {
+
+        return false;
     }
 
-    public void setPurchasePrice(Integer purchasePrice) {
-        this.purchasePrice = purchasePrice;
-    }
-
-    public Integer getSellPrice() {
-        return sellPrice;
-    }
-
-    public void setSellPrice(Integer sellPrice) {
-        this.sellPrice = sellPrice;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public Date getDuration() {
-        return duration;
-    }
-
-    public void setDuration(Date duration) {
-        this.duration = duration;
-    }
-
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
-
-    /**
-     * Gets update time.
-     *
-     * @return the update time
-     */
-    public Date getUpdateTime() {
-        return updateTime;
-    }
-
-    /**
-     * Sets update time.
-     *
-     * @param updateTime the update time
-     */
-    public void setUpdateTime(Date updateTime) {
-        this.updateTime = updateTime;
-    }
-
-    /**
-     * Gets create time.
-     *
-     * @return the create time
-     */
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    /**
-     * Sets create time.
-     *
-     * @param createTime the create time
-     */
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
+    @Override
+    public boolean sell() {
+        return false;
     }
 }
