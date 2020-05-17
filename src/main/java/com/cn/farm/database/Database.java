@@ -1,14 +1,22 @@
 package com.cn.farm.database;
 
+import cn.hutool.core.util.ObjectUtil;
+import com.cn.farm.model.Animal;
+import com.cn.farm.model.Feed;
+import com.cn.farm.model.Muck;
+import com.cn.farm.model.Plant;
 import com.fasterxml.jackson.core.JsonEncoding;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 /**
  * The type Database.
@@ -27,12 +35,14 @@ public class Database {
     /**
      * 保存所有农场信息.
      */
-    public static ObjectNode farmJson;
+    public static ObjectNode farmData;
+    public static ObjectNode currentFarmData;
     private static File file;
     //  系统分隔符
-    private static String separator = System.getProperty("File.separator");
+    private static String separator;
 
     static {
+        separator = System.getProperty("file.separator");
         // 读取数据库文件
         file = new File(System.getProperty("user.dir") + separator + "database.json");
         //  转换数据库文件
@@ -41,10 +51,15 @@ public class Database {
         try {
             //  json转成Java可用json
             dataJson = (ObjectNode) mapper.readTree(file);
-            farmJson = (ObjectNode) dataJson.get("farm");
+            farmData = (ObjectNode) dataJson.get("farm");
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public static boolean setCurrentFarm(String name) {
+        currentFarmData = (ObjectNode) farmData.get(name);
+        return ObjectUtil.isNotEmpty(currentFarmData);
     }
 
     /**
@@ -53,9 +68,9 @@ public class Database {
      * @param name the name
      * @return the object node
      */
-    public static ObjectNode getFarmByName(String name){
+    public static ObjectNode getFarmByName(String name) {
 
-        return (ObjectNode) farmJson.get(name);
+        return (ObjectNode) farmData.get(name);
     }
 
     /**
@@ -64,8 +79,8 @@ public class Database {
      * @param name the name
      * @return the array node
      */
-    public static ArrayNode getPlantByName(String name){
-        return (ArrayNode) farmJson.get(name).get("plant");
+    public static ArrayNode getPlantByName(String name) {
+        return (ArrayNode) farmData.get(name).get("plant");
     }
 
     /**
@@ -74,8 +89,8 @@ public class Database {
      * @param name the name
      * @return array node
      */
-    public static ArrayNode getAnimalByName(String name){
-        return (ArrayNode) farmJson.get(name).get("animal");
+    public static ArrayNode getAnimalByName(String name) {
+        return (ArrayNode) farmData.get(name).get("animal");
     }
 
     /**
@@ -84,8 +99,8 @@ public class Database {
      * @param name the name
      * @return the array node
      */
-    public static ArrayNode getMuckByName(String name){
-        return (ArrayNode) farmJson.get(name).get("item").get("muck");
+    public static ArrayNode getMuckByName(String name) {
+        return (ArrayNode) farmData.get(name).get("item").get("muck");
     }
 
     /**
@@ -94,8 +109,8 @@ public class Database {
      * @param name the name
      * @return the array node
      */
-    public static ArrayNode getFeedByName(String name){
-        return (ArrayNode) farmJson.get(name).get("item").get("feed");
+    public static ArrayNode getFeedByName(String name) {
+        return (ArrayNode) farmData.get(name).get("item").get("feed");
     }
 
     /**
@@ -103,7 +118,7 @@ public class Database {
      *
      * @return the array node
      */
-    public static ArrayNode getFarmType(){
+    public static ArrayNode getFarmType() {
         return (ArrayNode) dataJson.get("farmType");
     }
 
@@ -114,16 +129,73 @@ public class Database {
      * @param param 变量名
      * @return the object
      */
-    public static Object getGlobalParam(String param){
+    public static Object getGlobalParam(String param) {
         return dataJson.get(param);
+    }
+
+    public static List<Animal> getGlobalAnimal() {
+        ObjectMapper mapper = new ObjectMapper();
+        ArrayNode animalNode = (ArrayNode) Database.getGlobalParam("animal");
+        List<Animal> animalList = null;
+        try {
+            animalList = mapper.readValue(animalNode.toString(), new TypeReference<List<Animal>>() {
+            });
+        } catch (JsonProcessingException e) {
+            System.err.println("jsonNode to list error");
+            e.printStackTrace();
+        }
+        return animalList;
+    }
+
+    public static List<Plant> getGlobalPlant() {
+        ObjectMapper mapper = new ObjectMapper();
+        ArrayNode plantNode = (ArrayNode) Database.getGlobalParam("plant");
+        List<Plant> plantList = null;
+        try {
+            plantList = mapper.readValue(plantNode.toString(), new TypeReference<List<Plant>>() {
+            });
+        } catch (JsonProcessingException e) {
+            System.err.println("jsonNode to list error");
+            e.printStackTrace();
+        }
+        return plantList;
+    }
+
+    public static List<Muck> getGlobalMuck() {
+        ObjectMapper mapper = new ObjectMapper();
+        ArrayNode muckNode = (ArrayNode) ((ObjectNode) Database.getGlobalParam("item")).get("muck");
+        List<Muck> muckList = null;
+        try {
+            muckList = mapper.readValue(muckNode.toString(), new TypeReference<List<Muck>>() {
+            });
+        } catch (JsonProcessingException e) {
+            System.err.println("jsonNode to list error");
+            e.printStackTrace();
+        }
+        return muckList;
+    }
+
+    public static List<Feed> getGlobalFeed() {
+        ObjectMapper mapper = new ObjectMapper();
+        ArrayNode feedNode = (ArrayNode) ((ObjectNode) Database.getGlobalParam("item")).get("feed");
+        List<Feed> feedList = null;
+        try {
+            feedList = mapper.readValue(feedNode.toString(), new TypeReference<List<Feed>>() {
+            });
+        } catch (JsonProcessingException e) {
+            System.err.println("jsonNode to list error");
+            e.printStackTrace();
+        }
+        return feedList;
     }
 
     /**
      * Save data.
      */
-    public static void saveData() {
+    public static void updateData() {
         ObjectMapper mapper = new ObjectMapper();
         JsonFactory jsonFactory = new JsonFactory();
+        dataJson.set("farm", farmData);
         try {
             JsonGenerator jsonGenerator = jsonFactory.createGenerator(
                     file, JsonEncoding.UTF8);

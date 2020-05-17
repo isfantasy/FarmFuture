@@ -16,7 +16,7 @@ public class ModelTest {
 
     @Test
     public void FarmTest(){
-        Farm farm = new Farm("fantasy");
+        Farm farm = new Farm();
         System.out.println(farm.toString());
     }
 

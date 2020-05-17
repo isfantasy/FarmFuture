@@ -4,7 +4,7 @@
       "name": "user1",
       "type": 0,
       "fenceDamaged": 0,
-      "duration": "0/0/7 00:00:00",
+      "duration": 2,
       "money": 1000,
       "farmerRemainderCount": 2,
       "lastLoginTime": "2020/04/25 14:20:00",
@@ -19,7 +19,6 @@
           "happinessIndex": 80,
           "healthIndex": 75,
           "status": 0,
-          "count": 1,
           "updateTime": "2020/04/25 14:20:00",
           "createTime": "2020/04/24 14:20:00"
         }
@@ -62,6 +61,20 @@
           }
         ]
       }
+    },
+    "fantasy": {
+      "name": "fantasy",
+      "type": 1,
+      "fenceDamaged": 0,
+      "duration": 2,
+      "money": 1100,
+      "farmerRemainderCount": 2,
+      "createTime": 1589698482219,
+      "animal": {
+        "muck": [],
+        "feed": []
+      },
+      "plant": []
     }
   },
   "animal": [
@@ -79,7 +92,7 @@
       "purchasePrice": 10,
       "sellPrice": 5,
       "description": "",
-      "duration": 25
+      "durationHour": 25
     }
   ],
   "item": {

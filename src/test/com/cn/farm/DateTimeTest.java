@@ -23,6 +23,8 @@ public class DateTimeTest {
     public void stringToDatetime(){
         Date date = DateUtil.parse("0000/0/2 2:00:00");
         System.out.println(date);
+        date = DateUtil.date(Long.parseLong("1589698482219"));
+        System.out.println(date);
     }
 
     @Test

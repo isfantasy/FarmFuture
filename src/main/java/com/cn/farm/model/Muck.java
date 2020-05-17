@@ -12,6 +12,18 @@ public class Muck extends BaseItem{
 
     private Integer effectHour;
 
+    @Override
+    public String toString() {
+        return "Muck{" +
+                "effectHour=" + effectHour +
+                ", name='" + name + '\'' +
+                ", purchasePrice=" + purchasePrice +
+                ", sellPrice=" + sellPrice +
+                ", level=" + level +
+                ", count=" + count +
+                '}';
+    }
+
     public Integer getEffectHour() {
         return effectHour;
     }

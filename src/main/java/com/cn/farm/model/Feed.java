@@ -30,4 +30,17 @@ public class Feed extends BaseItem{
         this.happinessEffect = happinessEffect;
     }
 
+    @Override
+    public String toString() {
+        return "Feed{" +
+                "healthEffect=" + healthEffect +
+                ", happinessEffect=" + happinessEffect +
+                ", name='" + name + '\'' +
+                ", purchasePrice=" + purchasePrice +
+                ", sellPrice=" + sellPrice +
+                ", level=" + level +
+                ", count=" + count +
+                '}';
+    }
+
 }
