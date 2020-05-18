@@ -1,5 +1,6 @@
 package com.cn.farm.model;
 
+import cn.hutool.core.date.DateUtil;
 import com.cn.farm.database.Database;
 
 /**
@@ -10,7 +11,6 @@ import com.cn.farm.database.Database;
  * @Date: 2020/4/25
  **/
 public class Plant extends BaseItem implements PlantAction {
-    private String description;
     private Integer durationHour;
     private Integer adjHour;
     private Integer status;
@@ -36,8 +36,16 @@ public class Plant extends BaseItem implements PlantAction {
 
     @Override
     public boolean purchase() {
+        Farm farm = new Farm(true);
+        createTime = DateUtil.date().toString();
+        status = 0;
+        adjHour = 0;
+        updateTime = createTime;
 
-        return false;
+        farm.setMoney(farm.getMoney() - purchasePrice);
+        farm.getPlantList().add(this);
+        farm.updateFarm();
+        return true;
     }
 
     @Override
@@ -48,7 +56,6 @@ public class Plant extends BaseItem implements PlantAction {
     @Override
     public String toString() {
         return "Plant{" +
-                "description='" + description + '\'' +
                 ", durationHour=" + durationHour +
                 ", adjHour=" + adjHour +
                 ", status=" + status +
@@ -61,14 +68,6 @@ public class Plant extends BaseItem implements PlantAction {
                 ", level=" + level +
                 ", count=" + count +
                 '}';
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     public Integer getDurationHour() {

@@ -1,5 +1,7 @@
 package com.cn.farm.model;
 
+import java.util.List;
+
 /**
  * @ClassName Feed
  * @Description: 饲料类
@@ -8,7 +10,7 @@ package com.cn.farm.model;
  * @Version V1.0
  **/
 
-public class Feed extends BaseItem{
+public class Feed extends BaseItem implements BaseAction{
     // 增加健康值
     private Integer healthEffect;
     // 增加幸福值
@@ -43,4 +45,23 @@ public class Feed extends BaseItem{
                 '}';
     }
 
+    @Override
+    public boolean purchase() {
+        Farm farm = new Farm(true);
+        farm.setMoney(farm.getMoney() - purchasePrice);
+        List<Feed> feedList = farm.getFeedList();
+        for (Feed feed: feedList){
+            if (feed.getLevel().equals(level)){
+                feed.setCount(feed.getCount() + 1);
+                break;
+            }
+        }
+        farm.updateFarm();
+        return true;
+    }
+
+    @Override
+    public boolean sell() {
+        return false;
+    }
 }

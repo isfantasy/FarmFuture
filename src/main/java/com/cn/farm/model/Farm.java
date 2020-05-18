@@ -1,8 +1,9 @@
 package com.cn.farm.model;
 
+import cn.hutool.core.date.DateUtil;
 import com.cn.farm.database.Database;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -29,6 +30,7 @@ public class Farm {
     private Integer money;
     // 农民剩余操作
     private Integer farmerRemainderCount;
+    private String lastLoginTime;
     private String createTime;
 
     List<Animal> animalList;
@@ -36,9 +38,10 @@ public class Farm {
     List<Muck> muckList;
     List<Feed> feedList;
 
-    public Farm(){}
+    public Farm() {
+    }
 
-    public Farm(boolean loadData){
+    public Farm(boolean loadData) {
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode farmJson = Database.currentFarmData;
         this.name = farmJson.get("name").toString();
@@ -47,89 +50,73 @@ public class Farm {
         this.duration = Integer.parseInt(farmJson.get("duration").toString());
         this.money = Integer.parseInt(farmJson.get("money").toString());
         this.farmerRemainderCount = Integer.parseInt(farmJson.get("farmerRemainderCount").toString());
-        this.createTime = farmJson.get("duration").toString() ;
+        this.createTime = farmJson.get("duration").toString();
 
-        // 初始化动物
-        ArrayNode animalNode = (ArrayNode) farmJson.get("animal");
-        animalList = new ArrayList<>();
-        for (JsonNode animalJson:animalNode){
-            Animal animal = null;
-            try {
-                animal = mapper.readValue(animalJson.toString(), Animal.class);
-                animalList.add(animal);
-            } catch (JsonProcessingException e) {
-                System.err.println("转化错误");
-                e.printStackTrace();
+        try {
+            // 初始化动物
+            if (!farmJson.get("animalList").isNull()) {
+                ArrayNode animalNode = (ArrayNode) farmJson.get("animalList");
+                animalList = mapper.readValue(animalNode.toString(), new TypeReference<List<Animal>>() {
+                });
+            }else {
+                animalList = new ArrayList<>();
             }
-        }
 
-        // 初始化植物
-        ArrayNode plantNode = (ArrayNode) farmJson.get("plant");
-        plantList = new ArrayList<>();
-        for (JsonNode plantJson:plantNode){
-            Plant plant = null;
-            try {
-                plant = mapper.readValue(plantJson.toString(), Plant.class);
-                plantList.add(plant);
-            } catch (JsonProcessingException e) {
-                System.err.println("转化错误");
-                e.printStackTrace();
+            // 初始化植物
+            if (!farmJson.get("plantList").isNull()) {
+                ArrayNode plantNode = (ArrayNode) farmJson.get("plantList");
+                plantList = mapper.readValue(plantNode.toString(), new TypeReference<List<Plant>>() {
+                });
+            }else {
+                plantList = new ArrayList<>();
             }
-        }
 
-        // 初始化肥料
-        ArrayNode muckNode = (ArrayNode) farmJson.get("item").get("muck");
-        muckList = new ArrayList<>();
-        for (JsonNode muckJson:muckNode){
-            Muck muck = null;
-            try {
-                muck = mapper.readValue(muckJson.toString(), Muck.class);
-                muckList.add(muck);
-            } catch (JsonProcessingException e) {
-                System.err.println("转化错误");
-                e.printStackTrace();
+            // 初始化肥料
+            if (!farmJson.get("muckList").isNull()) {
+                ArrayNode muckNode = (ArrayNode) farmJson.get("muckList");
+                muckList = mapper.readValue(muckNode.toString(), new TypeReference<List<Muck>>() {
+                });
+            }else {
+                muckList = new ArrayList<>();
             }
-        }
 
-        // 初始化饲料
-        ArrayNode feedNode = (ArrayNode) farmJson.get("item").get("feed");
-        feedList = new ArrayList<>();
-        for (JsonNode feedJson:feedNode){
-            Feed feed = null;
-            try {
-                feed = mapper.readValue(feedJson.toString(), Feed.class);
-                feedList.add(feed);
-            } catch (JsonProcessingException e) {
-                System.err.println("转化错误");
-                e.printStackTrace();
+            // 初始化饲料
+            if (!farmJson.get("feedList").isNull()) {
+                ArrayNode feedNode = (ArrayNode) farmJson.get("feedList");
+                feedList = mapper.readValue(feedNode.toString(), new TypeReference<List<Feed>>() {
+                });
+            }else {
+                feedList = new ArrayList<>();
             }
-        }
 
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
     }
 
-    public boolean createFarm() throws JsonProcessingException {
+    public void createFarm() throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
-        // 农场节点
-        ObjectNode farmNode = (ObjectNode) mapper.readTree(mapper.writeValueAsString(this));
-        // 动物节点
-        ArrayNode animalNode = mapper.createArrayNode();
-        farmNode.set("animal", animalNode);
-        // 植物节点
-        ArrayNode plantNode = mapper.createArrayNode();
-        farmNode.set("plant", plantNode);
-        // 辅助物品节点
-        ObjectNode itemNode = mapper.createObjectNode();
-        // 肥料节点
-        ArrayNode muckNode = mapper.createArrayNode();
-        // 饲料节点
-        ArrayNode feedNode = mapper.createArrayNode();
-        itemNode.set("muck", muckNode);
-        itemNode.set("feed", feedNode);
-        farmNode.set("animal", itemNode);
-        System.out.println(farmNode.toString());
-        Database.farmData.set(name, farmNode);
+        createTime = DateUtil.date().toString();
+        lastLoginTime = createTime;
+        animalList = new ArrayList<>();
+        plantList = new ArrayList<>();
+        muckList = Database.getGlobalMuck();
+        feedList = Database.getGlobalFeed();
+        String thisStr = mapper.writeValueAsString(this);
+        Database.farmData.set(name, mapper.readTree(thisStr.replace("\\\"", "")));
         Database.updateData();
-        return true;
+    }
+
+    public void updateFarm() {
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            String thisStr = mapper.writeValueAsString(this);
+            Database.farmData.set(name.replace("\"", ""), mapper.readTree(thisStr.replace("\\\"", "")));
+            Database.updateData();
+            Database.setCurrentFarm(name.replace("\"", ""));
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -143,6 +130,14 @@ public class Farm {
                 ", farmerRemainderCount=" + farmerRemainderCount +
                 ", createTime=" + createTime +
                 '}';
+    }
+
+    public String getLastLoginTime() {
+        return lastLoginTime;
+    }
+
+    public void setLastLoginTime(String lastLoginTime) {
+        this.lastLoginTime = lastLoginTime;
     }
 
     public List<Animal> getAnimalList() {

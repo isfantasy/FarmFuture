@@ -1,5 +1,7 @@
 package com.cn.farm.model;
 
+import cn.hutool.core.date.DateUtil;
+
 /**
  * @ClassName Animal
  * @Description: 动物类
@@ -9,7 +11,6 @@ package com.cn.farm.model;
  **/
 
 public class Animal extends BaseItem implements AnimalAction{
-    private String description;
     // 生长周期
     private Integer durationHour;
     // 幸福指数
@@ -28,7 +29,17 @@ public class Animal extends BaseItem implements AnimalAction{
 
     @Override
     public boolean purchase() {
-        return false;
+        Farm farm = new Farm(true);
+        happinessIndex = 80;
+        healthIndex = 80;
+        createTime = DateUtil.date().toString();
+        status = 0;
+        updateTime = createTime;
+
+        farm.setMoney(farm.getMoney() - purchasePrice);
+        farm.getAnimalList().add(this);
+        farm.updateFarm();
+        return true;
     }
 
     @Override
@@ -39,7 +50,6 @@ public class Animal extends BaseItem implements AnimalAction{
     @Override
     public String toString() {
         return "Animal{" +
-                "description='" + description + '\'' +
                 ", durationHour=" + durationHour +
                 ", happinessIndex=" + happinessIndex +
                 ", healthIndex=" + healthIndex +
@@ -52,14 +62,6 @@ public class Animal extends BaseItem implements AnimalAction{
                 ", level=" + level +
                 ", count=" + count +
                 '}';
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     public Integer getDurationHour() {

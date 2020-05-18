@@ -28,6 +28,11 @@ public class DateTimeTest {
     }
 
     @Test
+    public void dateToString(){
+        System.out.println(DateUtil.date().toString());
+    }
+
+    @Test
     public void dateBewteen(){
         Date startdate = DateUtil.parse("2020/2/2 2:00:00");
         Date nowDate = new Date();

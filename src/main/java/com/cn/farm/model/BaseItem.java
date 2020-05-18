@@ -19,6 +19,8 @@ public abstract class BaseItem{
     public Integer level;
     // 剩余数量
     public Integer count;
+    // 简介
+    private String description;
 
     public String getName() {
         return name;
@@ -58,5 +60,13 @@ public abstract class BaseItem{
 
     public void setCount(Integer count) {
         this.count = count;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }
