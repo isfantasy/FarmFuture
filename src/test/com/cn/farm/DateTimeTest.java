@@ -34,9 +34,9 @@ public class DateTimeTest {
 
     @Test
     public void dateBewteen(){
-        Date startdate = DateUtil.parse("2020/2/2 2:00:00");
+        Date startdate = DateUtil.parseDate("2020-05-19 11:01:36");
         Date nowDate = new Date();
-        System.out.println(DateUtil.between(startdate, nowDate, DateUnit.DAY));
+        System.out.println(DateUtil.between(startdate, nowDate, DateUnit.HOUR));
         System.out.println(DateUtil.offset(startdate, DateField.HOUR, 2));
     }
 

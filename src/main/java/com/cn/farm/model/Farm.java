@@ -44,13 +44,13 @@ public class Farm {
     public Farm(boolean loadData) {
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode farmJson = Database.currentFarmData;
-        this.name = farmJson.get("name").toString();
+        this.name = farmJson.get("name").toString().replace("\"", "");
         this.type = Integer.parseInt(farmJson.get("type").toString());
         this.fenceDamaged = Integer.parseInt(farmJson.get("fenceDamaged").toString());
         this.duration = Integer.parseInt(farmJson.get("duration").toString());
         this.money = Integer.parseInt(farmJson.get("money").toString());
         this.farmerRemainderCount = Integer.parseInt(farmJson.get("farmerRemainderCount").toString());
-        this.createTime = farmJson.get("duration").toString();
+        this.createTime = farmJson.get("createTime").toString().replace("\"", "");;
 
         try {
             // 初始化动物
@@ -111,9 +111,9 @@ public class Farm {
         ObjectMapper mapper = new ObjectMapper();
         try {
             String thisStr = mapper.writeValueAsString(this);
-            Database.farmData.set(name.replace("\"", ""), mapper.readTree(thisStr.replace("\\\"", "")));
+            Database.farmData.set(name, mapper.readTree(thisStr));
             Database.updateData();
-            Database.setCurrentFarm(name.replace("\"", ""));
+            Database.setCurrentFarm(name);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }

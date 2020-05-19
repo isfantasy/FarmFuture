@@ -1,7 +1,11 @@
 package com.cn.farm.model;
 
+import cn.hutool.core.date.DateField;
+import cn.hutool.core.date.DateUnit;
 import cn.hutool.core.date.DateUtil;
 import com.cn.farm.database.Database;
+
+import java.util.Date;
 
 /**
  * @ClassName: Plant
@@ -20,17 +24,26 @@ public class Plant extends BaseItem implements PlantAction {
 
     @Override
     public boolean watering() {
-        adjHour += (Integer) Database.getGlobalParam("wateringHour");
-        return true;
-    }
+        if (DateUtil.between(DateUtil.parse(lastWatering), DateUtil.date(), DateUnit.DAY) > 1){
+            adjHour += (Integer) Database.getGlobalParam("wateringHour");
+            lastWatering = DateUtil.date().toString();
+            System.out.println("浇水成功");
+            return true;
+        }else {
+            System.out.println("一天只能浇水一次，浇水失败");
+            return false;
+        }
+}
 
     @Override
     public boolean fertilize(Muck muck) {
         if (muck.getCount() < 1) {
+            System.out.println("施肥失败");
             return false;
         }
         adjHour += muck.getEffectHour();
-        muck.setCount(muck.getCount());
+        muck.setCount(muck.getCount() - 1);
+        System.out.println("施肥成功");
         return true;
     }
 
@@ -40,6 +53,7 @@ public class Plant extends BaseItem implements PlantAction {
         createTime = DateUtil.date().toString();
         status = 0;
         adjHour = 0;
+        lastWatering = createTime;
         updateTime = createTime;
 
         farm.setMoney(farm.getMoney() - purchasePrice);
@@ -50,7 +64,18 @@ public class Plant extends BaseItem implements PlantAction {
 
     @Override
     public boolean sell() {
-        return false;
+        Farm farm = new Farm(true);
+        Date endTime = DateUtil.offset(DateUtil.date(), DateField.HOUR, adjHour);
+        if(DateUtil.between(DateUtil.parse(createTime), endTime, DateUnit.SECOND) < 1){
+            status = 2;
+            farm.setMoney(farm.getMoney() + sellPrice);
+            farm.updateFarm();
+            System.out.println("出售成功");
+            return true;
+        }else{
+            System.out.println("该产品暂时无法出售");
+            return false;
+        }
     }
 
     @Override

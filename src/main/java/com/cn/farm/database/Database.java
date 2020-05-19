@@ -1,10 +1,7 @@
 package com.cn.farm.database;
 
 import cn.hutool.core.util.ObjectUtil;
-import com.cn.farm.model.Animal;
-import com.cn.farm.model.Feed;
-import com.cn.farm.model.Muck;
-import com.cn.farm.model.Plant;
+import com.cn.farm.model.*;
 import com.fasterxml.jackson.core.JsonEncoding;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -37,6 +34,7 @@ public class Database {
      */
     public static ObjectNode farmData;
     public static ObjectNode currentFarmData;
+    public static Farm currentFarm;
     private static File file;
     //  系统分隔符
     private static String separator;
@@ -59,6 +57,7 @@ public class Database {
 
     public static boolean setCurrentFarm(String name) {
         currentFarmData = (ObjectNode) farmData.get(name);
+        currentFarm = new Farm(true);
         return ObjectUtil.isNotEmpty(currentFarmData);
     }
 

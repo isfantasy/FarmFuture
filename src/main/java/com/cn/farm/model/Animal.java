@@ -1,6 +1,7 @@
 package com.cn.farm.model;
 
 import cn.hutool.core.date.DateUtil;
+import com.cn.farm.database.Database;
 
 /**
  * @ClassName Animal
@@ -10,7 +11,7 @@ import cn.hutool.core.date.DateUtil;
  * @Version V1.0
  **/
 
-public class Animal extends BaseItem implements AnimalAction{
+public class Animal extends BaseItem implements AnimalAction {
     // 生长周期
     private Integer durationHour;
     // 幸福指数
@@ -24,12 +25,21 @@ public class Animal extends BaseItem implements AnimalAction{
 
     @Override
     public boolean feed(Feed feed) {
-        return false;
+        // 饲料数量不为0
+        if (feed.getCount() < 1) {
+            System.out.println("喂食失败");
+            return false;
+        }
+        healthIndex += feed.getHealthEffect();
+        happinessIndex += feed.getHappinessEffect();
+        feed.setCount(feed.getCount() - 1);
+        System.out.println("喂食成功");
+        return true;
     }
 
     @Override
     public boolean purchase() {
-        Farm farm = new Farm(true);
+        Farm farm = Database.currentFarm;
         happinessIndex = 80;
         healthIndex = 80;
         createTime = DateUtil.date().toString();
@@ -44,7 +54,16 @@ public class Animal extends BaseItem implements AnimalAction{
 
     @Override
     public boolean sell() {
-        return false;
+        Farm farm = Database.currentFarm;
+        if (status == 1) {
+            status = 2;
+            farm.setMoney(farm.getMoney() + sellPrice);
+            farm.updateFarm();
+            return true;
+        } else {
+            System.out.println("该产品暂时无法出售");
+            return false;
+        }
     }
 
     @Override

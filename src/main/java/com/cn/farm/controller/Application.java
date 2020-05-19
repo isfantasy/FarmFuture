@@ -1,12 +1,18 @@
 package com.cn.farm.controller;
 
+import cn.hutool.core.date.DateField;
+import cn.hutool.core.date.DateUnit;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.cn.farm.database.Database;
 import com.cn.farm.model.*;
+import com.cn.farm.tools.FormatTool;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 
@@ -19,8 +25,43 @@ import java.util.Scanner;
  **/
 
 public class Application {
+    public void printGlobalAnimal() {
+        List<Animal> animalList = Database.getGlobalAnimal();
+        for (int i = 0; i < animalList.size(); i++) {
+            Animal animal = animalList.get(i);
+            System.out.println("------------------------" + i + "号-------------------------");
+            System.out.println("\t名称：\t" + animal.getName());
+            System.out.println("\t购买价格：\t" + animal.getPurchasePrice());
+            System.out.println("\t描述：\t" + animal.getDescription());
+            System.out.println();
+        }
+    }
+
+    public void printGlobalPlant() {
+        List<Plant> plantList = Database.getGlobalPlant();
+        for (int i = 0; i < plantList.size(); i++) {
+            Plant plant = plantList.get(i);
+            System.out.println("------------------------" + i + "号-------------------------");
+            System.out.println("\t名称：\t" + plant.getName());
+            System.out.println("\t购买价格：\t" + plant.getPurchasePrice());
+            System.out.println("\t出售价格：\t" + plant.getSellPrice());
+            System.out.println("\t生长周期(小时)：\t" + plant.getDurationHour());
+            System.out.println("\t描述：\t" + plant.getDescription());
+            System.out.println();
+        }
+    }
+
+    public void printGlobalFarmType() {
+        ArrayNode farmTypeNode = (ArrayNode) Database.getGlobalParam("farmType");
+        System.out.println("=============================================");
+        for (JsonNode farmType : farmTypeNode) {
+            System.out.println("\t" + farmType.get("key") + ". \t" + farmType.get("value").toString());
+        }
+        System.out.println("=============================================");
+    }
+
     public void printFarmInfo() {
-        Farm farm = new Farm(true);
+        Farm farm = Database.currentFarm;
         System.out.println("======================农场信息=======================");
         System.out.println("\t名称：\t" + farm.getName());
         System.out.println("\t类型：\t" + farm.getType());
@@ -33,8 +74,11 @@ public class Application {
     }
 
     public void printAnimalInfo() {
-        Farm farm = new Farm(true);
+        Farm farm = Database.currentFarm;
         List<Animal> animalList = farm.getAnimalList();
+        if (animalList.size() < 1) {
+            System.out.println("您没有购买动物");
+        }
         for (int i = 0; i < animalList.size(); i++) {
             Animal animal = animalList.get(i);
             System.out.println("------------------------" + i + "号动物-------------------------");
@@ -52,17 +96,10 @@ public class Application {
         ObjectMapper mapper = new ObjectMapper();
         Scanner sc = new Scanner(System.in);
         List<Animal> animalList = Database.getGlobalAnimal();
-        Farm farm = new Farm(true);
+        Farm farm = Database.currentFarm;
         int operate;
         System.out.println("以下为动物列表：");
-        for (int i = 0; i < animalList.size(); i++) {
-            Animal animal = animalList.get(i);
-            System.out.println("------------------------" + i + "号-------------------------");
-            System.out.println("\t名称：\t" + animal.getName());
-            System.out.println("\t购买价格：\t" + animal.getPurchasePrice());
-            System.out.println("\t描述：\t" + animal.getDescription());
-            System.out.println();
-        }
+        printGlobalAnimal();
         System.out.println("您当前可用余额：" + farm.getMoney());
         while (true) {
             System.out.println("请输入你要购买动物的编号(输入-1退出):");
@@ -82,14 +119,50 @@ public class Application {
         }
     }
 
+    public void careAnimal() {
+        Scanner sc = new Scanner(System.in);
+        Farm farm = Database.currentFarm;
+        List<Animal> animalList = farm.getAnimalList();
+        List<Feed> feedList = farm.getFeedList();
+        int operate, animalNum, feedNum;
+        while (true) {
+            System.out.println("********************打理动物*************************");
+            System.out.println("*\t1. \t喂食");
+            System.out.println("*\t0. \t返回上层");
+            System.out.println("****************************************************");
+            System.out.println("请选择操作：");
+            operate = sc.nextInt();
+            sc.nextLine();
+            switch (operate) {
+                case 0:
+                    return;
+                case 1:
+                    printAnimalInfo();
+                    System.out.println("请选择喂养的动物：");
+                    animalNum = sc.nextInt();
+                    sc.nextLine();
+                    printFeedInfo();
+                    System.out.println("请选择使用的饲料：");
+                    feedNum = sc.nextInt();
+                    sc.nextLine();
+                    animalList.get(animalNum).feed(feedList.get(feedNum));
+                    break;
+                default:
+                    break;
+            }
+            farm.updateFarm();
+        }
+    }
+
     public void animalManage() {
         Scanner sc = new Scanner(System.in);
-        Farm farm = new Farm(true);
+        Farm farm = Database.currentFarm;
         int operate;
         while (true) {
             System.out.println("********************动物管理*************************");
             System.out.println("*\t1. \t打印已有动物信息");
             System.out.println("*\t2. \t购买新动物");
+            System.out.println("*\t3. \t打理动物");
             System.out.println("*\t0. \t返回上层");
             System.out.println("****************************************************");
             System.out.println("请选择操作：");
@@ -104,6 +177,9 @@ public class Application {
                 case 2:
                     pursueAnimal();
                     break;
+                case 3:
+                    careAnimal();
+                    break;
                 default:
                     break;
             }
@@ -111,8 +187,11 @@ public class Application {
     }
 
     public void printPlantInfo() {
-        Farm farm = new Farm(true);
+        Farm farm = Database.currentFarm;
         List<Plant> plantList = farm.getPlantList();
+        if (plantList.size() < 1) {
+            System.out.println("您没有购买植物");
+        }
         for (int i = 0; i < plantList.size(); i++) {
             Plant plant = plantList.get(i);
             System.out.println("------------------------" + i + "号植物-------------------------");
@@ -122,6 +201,9 @@ public class Application {
             System.out.println("\t描述：\t" + plant.getDescription());
             System.out.println("\t种植时间：\t" + plant.getCreateTime());
             System.out.println("\t上次浇水时间：\t" + plant.getLastWatering());
+            Date start = DateUtil.parse(plant.getCreateTime());
+            Date end = DateUtil.offset(start, DateField.HOUR, plant.getDurationHour() - plant.getAdjHour());
+            System.out.println("\t还需生长时间：\t" + FormatTool.dateBetweenParse(start, end));
             System.out.println("\t状态：\t" + plant.getStatus());
             System.out.println();
         }
@@ -131,19 +213,10 @@ public class Application {
         ObjectMapper mapper = new ObjectMapper();
         Scanner sc = new Scanner(System.in);
         List<Plant> plantList = Database.getGlobalPlant();
-        Farm farm = new Farm(true);
+        Farm farm = Database.currentFarm;
         int operate;
         System.out.println("以下为植物列表：");
-        for (int i = 0; i < plantList.size(); i++) {
-            Plant plant = plantList.get(i);
-            System.out.println("------------------------" + i + "号-------------------------");
-            System.out.println("\t名称：\t" + plant.getName());
-            System.out.println("\t购买价格：\t" + plant.getPurchasePrice());
-            System.out.println("\t出售价格：\t" + plant.getSellPrice());
-            System.out.println("\t生长周期(小时)：\t" + plant.getDurationHour());
-            System.out.println("\t描述：\t" + plant.getDescription());
-            System.out.println();
-        }
+        printGlobalPlant();
         System.out.println("您当前可用余额：" + farm.getMoney());
         while (true) {
             System.out.println("请输入你要购买动物的编号(输入-1退出):");
@@ -163,14 +236,68 @@ public class Application {
         }
     }
 
+    public void carePlant() {
+        Scanner sc = new Scanner(System.in);
+        Farm farm = Database.currentFarm;
+        List<Plant> plantList = farm.getPlantList();
+        List<Muck> muckList = farm.getMuckList();
+        int operate, plantNum, muckNum;
+        while (true) {
+            System.out.println("********************打理植物*************************");
+            System.out.println("*\t1. \t施肥");
+            System.out.println("*\t2. \t浇水");
+            System.out.println("*\t3. \t出售");
+            System.out.println("*\t0. \t返回上层");
+            System.out.println("****************************************************");
+            System.out.println("请选择操作：");
+            operate = sc.nextInt();
+            sc.nextLine();
+            switch (operate) {
+                case 0:
+                    return;
+                case 1:
+                    printPlantInfo();
+                    System.out.println("请选择施肥的植物：");
+                    plantNum = sc.nextInt();
+                    sc.nextLine();
+                    printMuckInfo();
+                    muckNum = sc.nextInt();
+                    sc.nextLine();
+                    plantList.get(plantNum).fertilize(muckList.get(muckNum));
+                    break;
+                case 2:
+                    printPlantInfo();
+                    System.out.println("请选择浇水的植物：");
+                    plantNum = sc.nextInt();
+                    sc.nextLine();
+                    plantList.get(plantNum).watering();
+                    break;
+                case 3:
+                    printPlantInfo();
+                    System.out.println("请选择想要出售的植物：");
+                    plantNum = sc.nextInt();
+                    sc.nextLine();
+                    if (plantList.get(plantNum).sell()) {
+                        plantList.remove(plantNum);
+                        farm.updateFarm();
+                    }
+                    break;
+                default:
+                    break;
+            }
+            farm.updateFarm();
+        }
+    }
+
     public void plantManage() {
         Scanner sc = new Scanner(System.in);
-        Farm farm = new Farm(true);
+        Farm farm = Database.currentFarm;
         int operate;
         while (true) {
             System.out.println("********************植物管理*************************");
             System.out.println("*\t1. \t打印已有植物信息");
             System.out.println("*\t2. \t购买新植物");
+            System.out.println("*\t3. \t打理植物");
             System.out.println("*\t0. \t返回上层");
             System.out.println("****************************************************");
             System.out.println("请选择操作：");
@@ -185,6 +312,9 @@ public class Application {
                 case 2:
                     pursuePlant();
                     break;
+                case 3:
+                    carePlant();
+                    break;
                 default:
                     break;
             }
@@ -192,7 +322,7 @@ public class Application {
     }
 
     public void printMuckInfo() {
-        Farm farm = new Farm(true);
+        Farm farm = Database.currentFarm;
         List<Muck> muckList = farm.getMuckList();
         for (int i = 0; i < muckList.size(); i++) {
             Muck muck = muckList.get(i);
@@ -211,7 +341,7 @@ public class Application {
         ObjectMapper mapper = new ObjectMapper();
         Scanner sc = new Scanner(System.in);
         List<Muck> muckList = Database.getGlobalMuck();
-        Farm farm = new Farm(true);
+        Farm farm = Database.currentFarm;
         int operate;
         System.out.println("以下为肥料列表：");
         for (int i = 0; i < muckList.size(); i++) {
@@ -272,7 +402,7 @@ public class Application {
     }
 
     public void printFeedInfo() {
-        Farm farm = new Farm(true);
+        Farm farm = Database.currentFarm;
         List<Feed> feedList = farm.getFeedList();
         for (int i = 0; i < feedList.size(); i++) {
             Feed feed = feedList.get(i);
@@ -293,7 +423,7 @@ public class Application {
         ObjectMapper mapper = new ObjectMapper();
         Scanner sc = new Scanner(System.in);
         List<Feed> feedList = Database.getGlobalFeed();
-        Farm farm = new Farm(true);
+        Farm farm = Database.currentFarm;
         int operate;
         System.out.println("以下为肥料列表：");
         for (int i = 0; i < feedList.size(); i++) {
@@ -356,7 +486,7 @@ public class Application {
 
     public void itemManage() {
         Scanner sc = new Scanner(System.in);
-        Farm farm = new Farm(true);
+        Farm farm = Database.currentFarm;
         int operate;
         while (true) {
             System.out.println("********************物品管理*************************");
@@ -396,7 +526,18 @@ public class Application {
                 System.out.println("请输入农场名：");
                 farmNameStr = sc.nextLine();
                 if (Database.setCurrentFarm(farmNameStr)) {
-                    Farm farm = new Farm(true);
+                    Farm farm = Database.currentFarm;
+                    Date start = DateUtil.parse(farm.getCreateTime());
+                    if (DateUtil.between(start, DateUtil.date(), DateUnit.DAY) >= farm.getDuration()){
+                        System.out.println("游戏结束，以下是您本次游戏结果");
+                        System.out.println("======================农场信息=======================");
+                        System.out.println("\t名称：\t" + farm.getName());
+                        System.out.println("\t类型：\t" + farm.getType());
+                        System.out.println("\t可用金额：\t" + farm.getMoney());
+                        System.out.println("\t游戏时间：\t" + farm.getDuration() + "天");
+                        System.out.println("====================================================");
+                        return;
+                    }
                     int operate;
                     System.out.println("欢迎再次登陆^_^~");
                     while (true) {
@@ -443,8 +584,7 @@ public class Application {
                 }
                 farm.setName(farmNameStr);
                 System.out.println("选择农场类型：");
-                System.out.println("1: 初试金币+10%");
-                System.out.println("2: 卖出收益+0.5%");
+                application.printGlobalFarmType();
                 farm.setType(sc.nextInt());
                 System.out.println("请选择游戏持续时间(天)：");
                 farm.setDuration(sc.nextInt());

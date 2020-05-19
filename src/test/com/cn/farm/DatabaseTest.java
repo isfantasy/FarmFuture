@@ -1,10 +1,7 @@
 package com.cn.farm;
 
 import com.cn.farm.database.Database;
-import com.cn.farm.model.Animal;
-import com.cn.farm.model.Feed;
-import com.cn.farm.model.Muck;
-import com.cn.farm.model.Plant;
+import com.cn.farm.model.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -63,5 +60,15 @@ public class DatabaseTest {
     public void getGlobalFeedTest(){
         List<Feed> feedList = Database.getGlobalFeed();
         System.out.println(feedList.get(0).toString());
+    }
+
+    @Test
+    public void currentFarmTest(){
+        Database.setCurrentFarm("test2");
+        Farm farm = Database.currentFarm;
+        System.out.println(farm.getType());
+        farm.setType(1);
+        Database.currentFarm.updateFarm();
+        System.out.println(Database.currentFarm.getType());
     }
 }
